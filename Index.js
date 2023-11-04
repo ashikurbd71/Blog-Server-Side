@@ -51,9 +51,22 @@ async function run() {
 // blog get all
 
 
-app.get('/blogs',(req,res) => {
+app.get('/blogs',async(req,res) => {
 
-  
+   try{
+    const result = await blogcolaction
+   
+    .find()
+    .sort({ createdAt: -1 }) 
+    .limit(6) 
+    .toArray()
+    res.send(result)
+   }
+   catch(err){
+
+    console.log(err)
+   }
+
 })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
