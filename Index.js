@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
 // midle
@@ -93,6 +93,23 @@ app.post('/addlist',async(req,res) => {
   const result = await addlist.find().toArray()
   res.send(result)
  })
+
+// addlist data delete()
+
+app.delete('/addlist/:id',async(req,res) => {
+
+ try{
+  const id = req.params.id
+  const qurey = {_id : new ObjectId(id)}
+  const result = await addlist.deleteOne(qurey)
+  res.send(result)
+ }
+ catch(err){
+
+  console.log(err)
+ }
+
+})
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
