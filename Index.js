@@ -31,6 +31,7 @@ async function run() {
     await client.connect();
 
     const blogcolaction = client.db("blogDB").collection("blogs");
+    const addlist = client.db("blogDB").collection("addblogs");
 
     // blog post databage
    app.post('/addblog',async(req,res) => {
@@ -68,6 +69,30 @@ app.get('/blogs',async(req,res) => {
    }
 
 })
+
+// post add list data
+
+app.post('/addlist',async(req,res) => {
+  try{
+    const blog = req.body
+    blog.createdAt = new Date();
+    const result = await addlist.insertOne(blog)
+    res.send(result)
+  }
+  catch(err){
+
+    console.log(err)
+  }
+
+})
+
+// addlist data get all
+
+ app.get('/addlist',async(req,res) => {
+
+  const result = await addlist.find().toArray()
+  res.send(result)
+ })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
