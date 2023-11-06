@@ -32,6 +32,40 @@ async function run() {
 
     const blogcolaction = client.db("blogDB").collection("blogs");
     const addlist = client.db("blogDB").collection("addblogs");
+    const commentlist = client.db("blogDB").collection("comments");
+
+    // get user comment
+
+    app.post('/comments',async(req,res) => {
+
+      try{
+        // const blog = req.body
+        const blog = req.body;
+   
+        const result = await commentlist.insertOne(blog)
+        res.send(result)
+      }
+      catch(err){
+  
+        console.log(err)
+      }
+  
+    })
+
+
+    // user get all data
+
+    app.get('/comments',async(req,res) => {
+
+     try{
+      const result = await commentlist.find().toArray()
+      res.send(result)
+     }
+     catch(err){
+
+      console.log(err)
+     }
+    })
 
     // blog post databage
    app.post('/addblog',async(req,res) => {
