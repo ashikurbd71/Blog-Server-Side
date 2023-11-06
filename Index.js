@@ -37,7 +37,8 @@ async function run() {
    app.post('/addblog',async(req,res) => {
 
     try{
-      const blog = req.body
+      // const blog = req.body
+      const blog = req.body;
       blog.createdAt = new Date();
       const result = await blogcolaction.insertOne(blog)
       res.send(result)
@@ -86,6 +87,59 @@ app.get('/allblogs',async(req,res) => {
    }
 
 
+})
+
+
+// bloginfo data from add blog
+
+
+ app.get('/allblogs/:id',async(req,res) => {
+
+   try{
+    const id = req.params.id
+  const qurey = {_id : new ObjectId(id)}
+  const result = await blogcolaction.findOne(qurey)
+  res.send(result)
+  }
+
+  catch(err) {
+  console.log(err)
+  }
+
+ })
+
+
+//  blog data update
+
+app.put('/allblogs/:id',async(req,res) => {
+
+  try{
+    const id = req.params.id;
+      const data = req.body;
+      console.log("id", id, data);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedUSer = {
+        $set: {
+          title:data?.title,
+          short_description: data?.short_description,
+          long_description: data?.long_description,
+          image: data?.image,
+           category: data?.category,
+        },
+      };
+      const result = await blogcolaction.updateOne(
+        filter,
+        updatedUSer,
+        options
+      );
+      res.send(result);
+  }
+
+  catch(err){
+
+    console.log(err)
+  }
 })
 
 // post add list data
