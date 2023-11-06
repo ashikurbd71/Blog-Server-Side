@@ -70,6 +70,24 @@ app.get('/blogs',async(req,res) => {
 
 })
 
+// get all data 
+
+app.get('/allblogs',async(req,res) => {
+  try{
+    const result = await blogcolaction
+   
+    .find()
+    .toArray()
+    res.send(result)
+   }
+   catch(err){
+
+    console.log(err)
+   }
+
+
+})
+
 // post add list data
 
 app.post('/addlist',async(req,res) => {
@@ -94,6 +112,23 @@ app.post('/addlist',async(req,res) => {
   res.send(result)
  })
 
+ //  add get single data
+
+app.get('/addlist/:id',async(req,res) => {
+
+  try{
+    const id = req.params.id
+  const qurey = {_id : new ObjectId(id)}
+  const result = await addlist.findOne(qurey)
+  res.send(result)
+  }
+
+  catch(err) {
+  console.log(err)
+  }
+
+})
+
 // addlist data delete()
 
 app.delete('/addlist/:id',async(req,res) => {
@@ -110,6 +145,9 @@ app.delete('/addlist/:id',async(req,res) => {
  }
 
 })
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
