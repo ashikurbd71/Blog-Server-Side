@@ -11,17 +11,17 @@ const port = process.env.PORT || 5000
 
 app.use(cors({
 
-  origin:['http://localhost:5175'],
+  origin:['http://localhost:5173'],
   credentials:true
 }))
 app.use(express.json())
 app.use(cookieParser())
 
 
-const verify = (req,res,next) => {
+function verify(req,res,next){
 
   const token = req?.cookies?.token
-  console.log('token',token)
+  console.log([req,req?.cookies])
   if(!token){
 
    return res?.status(401).send({message : 'unthorize'})
@@ -68,16 +68,9 @@ app.post('/jwt',async(req,res) => {
   const body = req.body
   
   const token = jwt.sign(body,process.env.SECRET_KEY,{expiresIn:'2h'})
-  console.log(token)
+  console.log("cookie set",token)
   res
-  .cookie('token',token,{
-   
-    httpOnly:true,
-    secure:false,
-    // sameSite:'none'
-  
-    
-  })
+  .cookie('token',token)
   .send({token})
 
 })
@@ -130,7 +123,7 @@ app.post('/jwt',async(req,res) => {
     })
 
     // blog post databage
-   app.post('/addblog',async(req,res) => {
+   app.post('/addblog',verify,async(req,res) => {
 
     try{
       // const blog = req.body
@@ -169,10 +162,11 @@ app.get('/blogs',async(req,res) => {
 
 // get all data 
 
-app.get('/allblogs',async(req,res) => {
+app.get('/allblogs',verify,async(req,res,next) => {
+    
   try{
-
-    // console.log(req?.user)
+    
+    // console.log("ovi",req?.headers)
     // if(req?.user.email !== req.query?.email){
 
     // return res.status(403).send({message: 'unvelied user'})
@@ -262,7 +256,7 @@ app.post('/addlist',async(req,res) => {
 
 // addlist data get all
 
- app.get('/addlist',async(req,res) => {
+ app.get('/addlist',verify,async(req,res) => {
 
   const result = await addlist.find().toArray()
   res.send(result)
