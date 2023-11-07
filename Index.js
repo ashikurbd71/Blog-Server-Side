@@ -1,17 +1,41 @@
 const express = require('express')
 const app = express()
 const cors = require('cors');
+const jwt =require('jsonwebtoken')
+var cookieParser = require('cookie-parser')
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
 // midle
 
-app.use(cors())
+app.use(cors({
+
+  origin:['http://localhost:5175'],
+  credentials:true
+}))
 app.use(express.json())
+app.use(cookieParser())
 
 
+const verify = (req,res,next) => {
 
+  const token = req?.cookies.token
+  if(!token){
+
+   return res.status(401).send({message : 'unthorize'})
+  }
+
+  jwt.verify(token,process.env.SECRET_KEY,(error,decode) => {
+    if(error){
+      return  res.status(401).send({message : 'unthorize'})
+      }
+    
+        req.user = decode
+      next()
+  })
+ 
+}
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mtnypra.mongodb.net/?retryWrites=true&w=majority`;
@@ -33,6 +57,42 @@ async function run() {
     const blogcolaction = client.db("blogDB").collection("blogs");
     const addlist = client.db("blogDB").collection("addblogs");
     const commentlist = client.db("blogDB").collection("comments");
+
+
+// jwt 
+
+app.post('/jwt',async(req,res) => {
+
+  const body = req.body
+  
+  const token = jwt.sign(body,process.env.SECRET_KEY,{expiresIn:'2h'})
+  console.log(token)
+  res
+  .cookie('token',token,{
+   
+    httpOnly:true,
+    secure:false,
+    // sameSite:'none'
+  
+    
+  })
+  .send({token})
+
+})
+
+// jwt logout
+
+  // jwt logout
+
+  app.post('/logout',(req,res) => {
+
+    const body = req.body
+    console.log(body)
+    res
+    .clearCookie('token',{maxAge:0})
+    .send({sucess: true})
+  })
+
 
     // get user comment
 
