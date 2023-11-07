@@ -20,18 +20,20 @@ app.use(cookieParser())
 
 const verify = (req,res,next) => {
 
-  const token = req?.cookies.token
+  const token = req?.cookies?.token
+  console.log('token',token)
   if(!token){
 
-   return res.status(401).send({message : 'unthorize'})
+   return res?.status(401).send({message : 'unthorize'})
   }
 
   jwt.verify(token,process.env.SECRET_KEY,(error,decode) => {
     if(error){
-      return  res.status(401).send({message : 'unthorize'})
+      return  res?.status(401).send({message : 'unthorize'})
       }
     
         req.user = decode
+        console.log(decode)
       next()
   })
  
@@ -80,7 +82,7 @@ app.post('/jwt',async(req,res) => {
 
 })
 
-// jwt logout
+
 
   // jwt logout
 
@@ -169,6 +171,12 @@ app.get('/blogs',async(req,res) => {
 
 app.get('/allblogs',async(req,res) => {
   try{
+
+    // console.log(req?.user)
+    // if(req?.user.email !== req.query?.email){
+
+    // return res.status(403).send({message: 'unvelied user'})
+    // }
     const result = await blogcolaction
    
     .find()
