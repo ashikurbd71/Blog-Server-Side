@@ -173,7 +173,7 @@ app.get('/allblogs',verify,async(req,res,next) => {
     
   try{
     
-    // console.log("ovi",req?.headers)
+ 
     // if(req?.user.email !== req.query?.email){
 
     // return res.status(403).send({message: 'unvelied user'})
