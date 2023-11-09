@@ -196,7 +196,7 @@ app.get('/allblogs',verify,async(req,res,next) => {
 // bloginfo data from add blog
 
 
- app.get('/allblogs/:id',async(req,res) => {
+ app.get('/allblogs/:id',verify,async(req,res) => {
 
    try{
     const id = req.params.id
